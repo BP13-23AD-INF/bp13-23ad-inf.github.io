@@ -1,0 +1,138 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Cryptographie au quotidien</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD"
+        crossorigin="anonymous">
+        <!-- Place favicon.ico in the root directory -->
+
+    </head>
+    <body class="container pb-5">
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+            crossorigin="anonymous"></script>
+        <script type="text/javascript" src="./js/jsrsasign-all-min.js"></script>
+        <h1>Cryptographie au quotidien</h1>
+        <div class="container">
+            Cette page va vous permettre de créer une paire de clés publique et
+            privée. Puis vous pourrez :
+            <ul>
+                <li>Chiffrer un message en utilisant la clé publique de votre
+                    destinataire.</li>
+                <li>Déchiffrer un message reçu en utilisant votre clé privée (si
+                    tant est que le message a été chiffré avec votre clé publique).</li>
+            </ul>
+        </div>
+
+        <hr />
+
+        <div class="container">
+            <h2>Générer une paire de clés publique et privée avec l'algorithme RSA</h2>
+            <p>Note : La génération des clés peut prendre quelques secondes.
+                Celles-ci vont s'afficher sous le bouton lorsqu'elles auront été générées.</p>
+            <button class="btn btn-primary" onclick="generateKeys();">Générer une clé publique et privée</button>
+            <div>
+                Clé publique :<br />
+                <div id="public-key"></div>
+            </div>
+            <div class="mt-5">
+                Clé privée :<br/ >
+                <div id="private-key"></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="container mt-3">
+            <h2>Chiffrer un message avec une clé publique</h2>
+            Pour chiffrer un message, vous pouvez saisir le texte que vous
+            souhaitez chiffrer ainsi que la clé publique utilisée pour chiffrer ce
+            message. <br />
+            Attention, il faudra utiliser la clé privée correspondante pour
+            ensuite pouvoir déchiffrer ce message.
+
+            <div class="mt-3">
+                <div class="mb-3">
+                    <label class="form-label">Message à chiffrer :</label>
+                    <textarea rows="3" class="form-control" id="clear-input"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Clé publique du destinataire :</label>
+                    <textarea rows="10" class="form-control" id="encrypt-key"></textarea>
+                </div>
+                <button class="btn btn-primary"
+                        onclick="encrypt();">Chiffrer le message</button>
+            </div>
+
+            <div class="mt-3">
+                Message chiffré : <br />
+                <div id="encrypted-message" class="text-break"></div>
+            </div>
+        </div>
+
+        <hr />
+
+        <div class="container mt-3">
+            <h2>Déchiffrer un message avec une clé privée</h2>
+            Une fois que le message a été chiffré avec une clé publique, nous
+            pouvons le déchiffrer avec la clé privée associée. <br />
+            Pour cela, vous pouvez saisir le message chiffré ainsi que la clé
+            privée à utiliser pour déchiffrer le message.
+
+            <div class="mt-3">
+                <div class="mb-3">
+                    <label class="form-label">Message à déchiffrer :</label>
+                    <textarea rows="3" class="form-control" id="encrypted-input"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Clé privée du destinataire :</label>
+                    <textarea rows="10" class="form-control" id="decrypt-key"></textarea>
+                </div>
+                <button class="btn btn-primary"
+                        onclick="decrypt();">Déchiffrer le message</button>
+            </div>
+
+            <div class="mt-3">
+                Message chiffré : <br />
+                <div id="decrypted-message" class="w-75"></div>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+     function generateKeys() {
+         var rsaKeypair = KEYUTIL.generateKeypair("RSA", 2048);
+         var privateKey = KEYUTIL.getPEM(rsaKeypair.prvKeyObj, "PKCS8PRV");
+         var publicKey = KEYUTIL.getPEM(rsaKeypair.pubKeyObj);
+         var publicKeyDiv = document.getElementById('public-key');
+         publicKeyDiv.innerText = publicKey;
+         var privateKeyDiv = document.getElementById('private-key');
+         privateKeyDiv.innerText = privateKey;
+     }
+
+     function encrypt() {
+         var message = document.getElementById('clear-input').value;
+         var publicKey = KEYUTIL.getKey(document.getElementById('encrypt-key').value);
+         var encryptedMessage = KJUR.crypto.Cipher.encrypt(message, publicKey, "RSA");
+         var encryptedMessageDiv = document.getElementById('encrypted-message');
+         encryptedMessageDiv.innerText = encryptedMessage;
+     }
+
+     function decrypt() {
+         var message = document.getElementById('encrypted-input').value;
+         var privateKey = KEYUTIL.getKey(document.getElementById('decrypt-key').value);
+         var decryptedMessage = KJUR.crypto.Cipher.decrypt(message, privateKey, "RSA");
+         var decryptedMessageDiv = document.getElementById('decrypted-message');
+         decryptedMessageDiv.innerText = decryptedMessage;
+     }
+    </script>
+</html>
