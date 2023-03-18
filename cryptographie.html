@@ -22,6 +22,7 @@
             integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
             crossorigin="anonymous"></script>
         <script type="text/javascript" src="./js/jsrsasign-all-min.js"></script>
+        <script type="text/javascript" src="./js/encrypt.js"></script>
         <h1>Cryptographie au quotidien</h1>
         <div class="container">
             Cette page va vous permettre de créer une paire de clés publique et
@@ -108,31 +109,4 @@
             </div>
         </div>
     </body>
-    <script type="text/javascript">
-     function generateKeys() {
-         var rsaKeypair = KEYUTIL.generateKeypair("RSA", 2048);
-         var privateKey = KEYUTIL.getPEM(rsaKeypair.prvKeyObj, "PKCS8PRV");
-         var publicKey = KEYUTIL.getPEM(rsaKeypair.pubKeyObj);
-         var publicKeyDiv = document.getElementById('public-key');
-         publicKeyDiv.innerText = publicKey;
-         var privateKeyDiv = document.getElementById('private-key');
-         privateKeyDiv.innerText = privateKey;
-     }
-
-     function encrypt() {
-         var message = document.getElementById('clear-input').value;
-         var publicKey = KEYUTIL.getKey(document.getElementById('encrypt-key').value);
-         var encryptedMessage = KJUR.crypto.Cipher.encrypt(message, publicKey, "RSA");
-         var encryptedMessageDiv = document.getElementById('encrypted-message');
-         encryptedMessageDiv.innerText = encryptedMessage;
-     }
-
-     function decrypt() {
-         var message = document.getElementById('encrypted-input').value;
-         var privateKey = KEYUTIL.getKey(document.getElementById('decrypt-key').value);
-         var decryptedMessage = KJUR.crypto.Cipher.decrypt(message, privateKey, "RSA");
-         var decryptedMessageDiv = document.getElementById('decrypted-message');
-         decryptedMessageDiv.innerText = decryptedMessage;
-     }
-    </script>
 </html>
