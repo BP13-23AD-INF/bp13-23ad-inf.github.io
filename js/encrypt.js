@@ -10,8 +10,8 @@ function generateKeys() {
 
 function encrypt() {
   var message = document.getElementById('clear-input').value;
-  var publicKey = KEYUTIL.getKey(document.getElementById('encrypt-key').value);
   try {
+    var publicKey = KEYUTIL.getKey(document.getElementById('encrypt-key').value);
     var encryptedMessage = KJUR.crypto.Cipher.encrypt(message, publicKey, "RSA");
     var encryptedMessageDiv = document.getElementById('encrypted-message');
     encryptedMessageDiv.innerText = encryptedMessage;
@@ -23,8 +23,8 @@ function encrypt() {
 
 function decrypt() {
   var message = document.getElementById('encrypted-input').value;
-  var privateKey = KEYUTIL.getKey(document.getElementById('decrypt-key').value);
   try {
+    var privateKey = KEYUTIL.getKey(document.getElementById('decrypt-key').value);
     var decryptedMessage = KJUR.crypto.Cipher.decrypt(message, privateKey, "RSA");
     if (!decryptedMessage) {
       alert("Message et clé non-compatibles.");
